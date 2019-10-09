@@ -18,15 +18,6 @@
 		<string>CloudDocuments</string>
 		<string>CloudKit</string>
 	</array>
-	<key>com.apple.developer.in-app-payments</key>
-	<array>
-		<string>merchant.ph.telegra.Telegraph</string>
-		<string>merchant.yandex.ph.telegra.Telegraph</string>
-		<string>merchant.sberbank.ph.telegra.Telegraph</string>
-		<string>merchant.sberbank.test.ph.telegra.Telegraph</string>
-		<string>merchant.privatbank.test.telergramios</string>
-		<string>merchant.privatbank.prod.telergram</string>
-	</array>
 	<key>com.apple.developer.siri</key>
 	<true/>
 	<key>com.apple.security.application-groups</key>

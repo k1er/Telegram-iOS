@@ -69,7 +69,11 @@ private class ApplicationStatusBarHost: StatusBarHost {
     }
     
     var statusBarWindow: UIView? {
-        return self.application.value(forKey: "statusBarWindow") as? UIView
+        if #available(iOS 13.0, *) {
+            return nil
+        } else {
+            return self.application.value(forKey: "statusBarWindow") as? UIView
+        }
     }
     
     var statusBarView: UIView? {
@@ -1092,7 +1096,11 @@ final class SharedApplicationContext {
         })
         
         let pushRegistry = PKPushRegistry(queue: .main)
-        pushRegistry.desiredPushTypes = Set([.voIP])
+        if #available(iOS 9.0, *) {
+            pushRegistry.desiredPushTypes = Set([.voIP])
+        } else {
+            // Fallback on earlier versions
+        }
         self.pushRegistry = pushRegistry
         pushRegistry.delegate = self
         
@@ -1331,10 +1339,14 @@ final class SharedApplicationContext {
     }
 
     public func pushRegistry(_ registry: PKPushRegistry, didUpdate credentials: PKPushCredentials, for type: PKPushType) {
-        if case PKPushType.voIP = type {
-            Logger.shared.log("App \(self.episodeId)", "pushRegistry credentials: \(credentials.token as NSData)")
-            
-            self.voipTokenPromise.set(.single(credentials.token))
+        if #available(iOS 9.0, *) {
+            if case PKPushType.voIP = type {
+                Logger.shared.log("App \(self.episodeId)", "pushRegistry credentials: \(credentials.token as NSData)")
+                
+                self.voipTokenPromise.set(.single(credentials.token))
+            }
+        } else {
+            // Fallback on earlier versions
         }
     }
     
@@ -1344,9 +1356,13 @@ final class SharedApplicationContext {
         |> deliverOnMainQueue).start(next: { sharedApplicationContext in
             sharedApplicationContext.wakeupManager.allowBackgroundTimeExtension(timeout: 4.0)
             
-            if case PKPushType.voIP = type {
-                Logger.shared.log("App \(self.episodeId)", "pushRegistry payload: \(payload.dictionaryPayload)")
-                sharedApplicationContext.notificationManager.addNotification(payload.dictionaryPayload)
+            if #available(iOS 9.0, *) {
+                if case PKPushType.voIP = type {
+                    Logger.shared.log("App \(self.episodeId)", "pushRegistry payload: \(payload.dictionaryPayload)")
+                    sharedApplicationContext.notificationManager.addNotification(payload.dictionaryPayload)
+                }
+            } else {
+                // Fallback on earlier versions
             }
         })
     }

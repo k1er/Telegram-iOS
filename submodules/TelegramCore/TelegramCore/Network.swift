@@ -413,6 +413,7 @@ public struct NetworkInitializationArguments {
         self.appVersion = appVersion
         self.voipMaxLayer = voipMaxLayer
         self.appData = appData
+        print("API ID: \(apiId)")
     }
 }
 
